@@ -1,0 +1,34 @@
+# -*- coding: utf-8 -*-
+# vim: ft=jinja
+
+{## Start with  defaults from defaults.sls ##}
+{% import_yaml 'zsh/defaults.yaml' as default_settings %}
+
+{## 
+Setup variable using grains['os_family'] based logic, only add key:values here
+that differ from whats in defaults.yaml
+##}
+{% set os_family_map = salt['grains.filter_by']({
+        'Debian': {
+          'grml_pkg': 'grml-etc-core',
+        },
+        'Suse': {},
+        'Arch': {
+          'completions_pkg': 'zsh-completions',
+          'grml_pkg': 'grml-zsh-config',
+        },
+        'RedHat': {},
+  }
+  , grain="os_family"
+  , merge=salt['pillar.get']('zsh:lookup'))
+%}
+{## Merge the flavor_map to the default settings ##}
+{% do default_settings.zsh.update(os_family_map) %}
+
+{## Merge in zsh:lookup pillar ##}
+{% set zsh = salt['pillar.get'](
+        'zsh',
+        default=default_settings.zsh,
+        merge=True
+    )
+%}
