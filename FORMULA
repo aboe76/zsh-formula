@@ -1,0 +1,8 @@
+name: zsh
+os: RedHat, Debian, Suse, Arch
+os_family: RedHat, Debian, Suse, Arch
+depencies: None
+version: 201506
+release: 1
+summary: Formula to install zsh
+description: Formula to install zsh
